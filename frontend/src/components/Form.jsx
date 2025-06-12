@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import api from "../api.js";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
@@ -17,13 +17,20 @@ function Form({ route, method }) {
     setLoading(true);
     e.preventDefault();
 
-    try {
+    try { 
         const res = await api.post(route, {username, password})
+        console.log("Full response data:", res.data);
         if (method === "login") {
             localStorage.setItem(ACCESS_TOKEN, res.data.access);
             localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-            console.log(username, password);
-            navigate("/");
+            localStorage.setItem("username", res.data.username);
+            localStorage.setItem("is_superuser", res.data.is_superuser);
+            console.log(`username: ${res.data.username}`)
+            if (res.data.username === "admin") {
+              navigate("/admin")
+            } else {
+              navigate("/")
+            }
         } else {
             navigate("/");
         }
