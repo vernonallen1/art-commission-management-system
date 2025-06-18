@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework import generics 
-from .serializers import UserSerializer, CommissionSerializer, ReferenceImageSerializer, LogSerializer
+from .serializers import UserSerializer, CommissionSerializer, ReferenceImageSerializer, LogSerializer, ProgressSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models.Commission import Commission
 from .models.ReferenceImage import ReferenceImage
 from .models.Log import Log
+from .models.Progress import Progress
 from django.http import JsonResponse
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -84,6 +85,41 @@ class ReferenceImageViewSet(generics.ListCreateAPIView):
             ReferenceImage.objects.create(
                 commission_id=commission_id,
                 author=author,
+                image=img
+            )
+
+        return Response({'message': 'Images uploaded.'}, status=201)
+    
+class ProgressViewSet(generics.ListCreateAPIView):
+    serializer_class = ProgressSerializer
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]  # <-- Necessary for handling image uploads
+
+    def get_queryset(self):
+        user = self.request.user
+        commission_id = self.kwargs.get('pk')
+
+        queryset = ReferenceImage.objects.all() if user.is_superuser else ReferenceImage.objects.filter(author=user)
+
+        if commission_id:
+            queryset = queryset.filter(commission=commission_id)
+
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        commission_id = self.kwargs.get('pk')
+        images = request.FILES.getlist('image')
+        status_progress = request.data.get('status_progress')
+        description = request.data.get('description') 
+
+        if not images:
+            return Response({'error': 'No images provided.'}, status=400)
+
+        for img in images:
+            Progress.objects.create(
+                commission_id=commission_id,
+                description=description,
+                status_progress=status_progress,
                 image=img
             )
 

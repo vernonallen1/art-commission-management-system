@@ -8,10 +8,10 @@ import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 import CommissionForm from "./pages/user/CommissionForm.jsx";
 import AdminHomepage from "./pages/admin/AdminHomepage.jsx";
 import AdminRoute from "./components/admin/AdminRoute.jsx";
-import Commissions from "./pages/admin/Commissions.jsx";
+import Commissions from "./pages/admin/commissions/Commissions.jsx";
 import Products from "./pages/admin/Products.jsx";
 import Logs from "./pages/admin/Logs.jsx";
-import ViewCommission from "./pages/admin/ViewCommission.jsx";
+import ViewCommission from "./pages/admin/commissions/ViewCommission.jsx";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

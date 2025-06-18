@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models.Commission import Commission
 from .models.ReferenceImage import ReferenceImage
 from .models.Log import Log
+from .models.Progress import Progress
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,4 +37,11 @@ class ReferenceImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReferenceImage
+        fields = '__all__'
+
+class ProgressSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(use_url = True)
+    
+    class Meta:
+        model = Progress 
         fields = '__all__'

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import api from "../../api.js";
+import api from "../../../api.js";
 import { useQuery } from "@tanstack/react-query";
-import AdminBaseLayout from "./AdminBaseLayout.jsx";
+import AdminBaseLayout from "../AdminBaseLayout.jsx";
 import { Check, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -156,7 +156,7 @@ const Commissions = () => {
             <div
               key={index}
               className="grid grid-cols-10 mx-10 px-3 py-2 border-b border-gray-200 hover:bg-gray-300 cursor-pointer bg-gray-100 rounded-md my-2"
-              onClick={() => viewCommission(commission.id)}
+              onClick={() => viewCommission(commission.id, commission.status)}
             >
               <div className="col-span-1">{commission.author.username}</div>
               <div className="col-span-1">{commission.id}</div>
