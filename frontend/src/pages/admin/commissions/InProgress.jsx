@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api.js";
@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 async function getStatusImages(id) {
-  const res = await api.get(`commission/progress/${id}`);
+  const res = await api.get(`api/commission/progress/${id}`);
   return res.data;
 }
 
@@ -27,12 +27,8 @@ const InProgress = (props) => {
   } = useQuery({
     queryKey: ["progress-images", { id: data.id }],
     queryFn: () => getStatusImages(data.id),
-    retry: false,
+    // retry: false,
   });
-
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
 
   const uploadImageWithImageData = async (imageData, commissionId) => {
     const formData = new FormData();
@@ -67,13 +63,27 @@ const InProgress = (props) => {
     reader.onloadend = () => {
       const imageData = { file, preview: reader.result };
       setProgressImageStatus((prev) => ({
-      ...prev,
-      [selectedProgress]: imageData,
-    }));
+        ...prev,
+        [selectedProgress]: imageData,
+      }));
       uploadImageWithImageData(imageData, data.id);
     };
     reader.readAsDataURL(file);
   };
+
+  const viewRef = (id) => {
+    navigate(`/view_ref/${id}`);
+  };
+
+  useEffect(() => {
+    if (progressImages) (
+      setProgressImageStatus(Object.fromEntries(progressImages.map(progress => [progress.status_progress, progress.image])))
+    )
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading</div>;
+  }
 
   return (
     <div className="p-5">
@@ -86,7 +96,9 @@ const InProgress = (props) => {
         <p className="font-bold text-2xl p-4">
           ID: {data.id} | {data.commission_size} - {data.commission_style}
         </p>
-        <button className="ml-2 bg-blue-200 rounded-md p-1">View Ref</button>
+        <button className="ml-2 bg-blue-200 rounded-md p-1" onClick={() => viewRef(data.id)}>View Ref
+
+        </button>
       </div>
       <div className="flex">
         {progressStatus.map((status, index) => {
@@ -105,34 +117,32 @@ const InProgress = (props) => {
           );
         })}
       </div>
-      {!progressImages && (
-        <div className="flex justify-center items-center h-[300px] border-1 border-gray-300 bg-gray-100 rounded-xl m-2">
-          {progressImageStatus[selectedProgress] && (
-            <img
-              src={progressImageStatus[selectedProgress].preview}
-              alt={`Uploaded`}
-              className="h-full rounded-md"
+      <div className="flex justify-center items-center h-[300px] border-1 border-gray-300 bg-gray-100 rounded-xl m-2">
+        {progressImageStatus[selectedProgress] && (
+          <img
+            src={progressImageStatus[selectedProgress].preview ? progressImageStatus[selectedProgress].preview : progressImageStatus[selectedProgress]}
+            alt={`Uploaded`}
+            className="h-full rounded-md"
+          />
+        )}
+        {!progressImageStatus[selectedProgress] && (
+          <>
+            <label htmlFor="imageUpload" className="cursor-pointer">
+              <div className="flex justify-center items-center bg-blue-300 rounded-md p-1">
+                Upload Image Status
+              </div>
+            </label>
+            <input
+              id="imageUpload"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
             />
-          )}
-          {!progressImageStatus[selectedProgress] && (
-            <>
-              <label htmlFor="imageUpload" className="cursor-pointer">
-                <div className="flex justify-center items-center bg-blue-300 rounded-md p-1">
-                  Upload Image Status
-                </div>
-              </label>
-              <input
-                id="imageUpload"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageUpload}
-                style={{ display: "none" }}
-              />
-            </>
-          )}
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

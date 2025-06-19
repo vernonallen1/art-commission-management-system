@@ -36,11 +36,11 @@ const Pending = (props) => {
           className="hover:bg-blue-200 rounded-full p-1"
           onClick={() => navigate(-1)}
         />
+        <p className="font-bold text-2xl p-4">
+          ID: {data.id} | {data.commission_size} - {data.commission_style}
+        </p>
       </div>
-      <div className="grid py-1">From: {data.author.username}</div>
-      <div className="grid py-1">
-        {data.commission_size} - {data.commission_style}
-      </div>
+
       <div className="grid grid-cols-5 gap-x-2">
         {images &&
           images.map((image, index) => {

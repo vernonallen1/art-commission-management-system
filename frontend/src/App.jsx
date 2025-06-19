@@ -12,6 +12,7 @@ import Commissions from "./pages/admin/commissions/Commissions.jsx";
 import Products from "./pages/admin/Products.jsx";
 import Logs from "./pages/admin/Logs.jsx";
 import ViewCommission from "./pages/admin/commissions/ViewCommission.jsx";
+import ViewRef from "./pages/admin/commissions/ViewRef.jsx";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,6 +30,7 @@ const adminRoutes = [
   { path: "/products", element: <Products /> },
   { path: "/logs", element: <Logs /> },
   { path: "/commissions/:id", element: <ViewCommission /> },
+  { path: "/view_ref/:id", element: <ViewRef />}
 ];
 
 function Logout() {

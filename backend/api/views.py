@@ -99,11 +99,13 @@ class ProgressViewSet(generics.ListCreateAPIView):
         user = self.request.user
         commission_id = self.kwargs.get('pk')
 
-        queryset = ReferenceImage.objects.all() if user.is_superuser else ReferenceImage.objects.filter(author=user)
+        queryset = Progress.objects.all() if user.is_superuser else ReferenceImage.objects.filter(author=user)
 
         if commission_id:
             queryset = queryset.filter(commission=commission_id)
 
+        print("here")
+        print(queryset)
         return queryset
 
     def create(self, request, *args, **kwargs):

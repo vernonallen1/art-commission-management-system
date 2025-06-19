@@ -21,7 +21,6 @@ async function getReferenceImages(id) {
 const ViewCommission = () => {
   const { id } = useParams();
   
-
   const {
     data,
     isLoading: isLoadingCom,
