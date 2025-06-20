@@ -23,9 +23,15 @@ class CommissionCreate(generics.ListCreateAPIView):
         qs = Commission.objects.all() if user.is_superuser else Commission.objects.filter(author=user) 
 
         status = self.request.query_params.get('status')
+        size = self.request.query_params.get('size')
+        style = self.request.query_params.get('style')
 
         if status:
             qs = qs.filter(status=status)
+        if size:
+            qs = qs.filter(commission_size=size)
+        if style:
+            qs = qs.filter(commission_style=style)
         
         return qs
     
@@ -41,7 +47,7 @@ class LogCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user 
-        return Log.objects.all() if user.is_superuser else Commission.objects.filter(user=user)
+        return Log.objects.all() if user.is_superuser else Log.objects.filter(user=user)
     
     def perform_create(self, serializer):
         if (serializer.is_valid()):
@@ -99,13 +105,11 @@ class ProgressViewSet(generics.ListCreateAPIView):
         user = self.request.user
         commission_id = self.kwargs.get('pk')
 
-        queryset = Progress.objects.all() if user.is_superuser else ReferenceImage.objects.filter(author=user)
+        queryset = Progress.objects.all() if user.is_superuser else Progress.objects.filter(author=user)
 
         if commission_id:
             queryset = queryset.filter(commission=commission_id)
 
-        print("here")
-        print(queryset)
         return queryset
 
     def create(self, request, *args, **kwargs):

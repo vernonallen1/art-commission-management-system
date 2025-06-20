@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BaseLayout from "./BaseLayout";
 import { useQuery } from "@tanstack/react-query";
 import api from "../../api.js";
 
-const fetchCommissions = async () => {
-  return api.get("api/commissions/").then((res) => res.data);
+const fetchCommissions = async (size, style, status) => {
+  const params = new URLSearchParams();
+  if (size) params.append("size", size);
+  if (style) params.append("style", style);
+  if (status) params.append("status", status);
+
+  return await api.get(`api/commissions/?${params.toString()}`).then((res) => res.data);
 };
 
 function isValidISOString(str) {
@@ -33,33 +38,48 @@ const Commission = () => {
     { Status: 1 },
     { Completion: 1 },
   ];
+  const [data, setData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+
   const sizes = ["Full Body", "Half Body", "Bust"];
   const styles = ["Flat-Colored", "Line Art", "Sketch", "Semi-Rendered"];
   const statuses = ["Pending", "Accepted", "In Progress", "Completed"];
 
-  const [isModalOpen, setIsModelOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedStyle, setSelectedStyle] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  const handleSizeChange = () => {
+  const handleSizeChange = (e) => {
     setSelectedSize(e.target.value);
   };
 
-  const handleStyleChange = () => {
+  const handleStyleChange = (e) => {
     setSelectedStyle(e.target.value);
   };
 
-  const handleStatusChange = () => {
+  const handleStatusChange = (e) => {
     setSelectedStatus(e.target.value);
   };
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["commissions"],
-    queryFn: fetchCommissions,
-  });
+  useEffect(() => {
+    const loadCommissions = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const result = await fetchCommissions(selectedSize, selectedStyle, selectedStatus);
+        setData(result);
+      } catch (err) {
+        setError(err)
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-  if (isLoading) return <p>loading ....</p>;
+    loadCommissions();
+  }, [selectedSize, selectedStyle, selectedStatus])
+
   if (error)
     return (
       <p>
@@ -110,7 +130,7 @@ const Commission = () => {
                 >
                   <option value="">All Sizes</option>
                   {sizes.map((size, index) => {
-                    return <option value="size">{size}</option>;
+                    return <option value={size}>{size}</option>;
                   })}
                 </select>
                 <select
@@ -121,7 +141,7 @@ const Commission = () => {
                 >
                   <option value="">All Styles</option>
                   {styles.map((style, index) => {
-                    return <option value="size">{style}</option>;
+                    return <option value={style}>{style}</option>;
                   })}
                 </select>
                 <select
@@ -132,7 +152,7 @@ const Commission = () => {
                 >
                   <option value="">All Status</option>
                   {statuses.map((status, index) => {
-                    return <option value="size">{status}</option>;
+                    return <option value={status}>{status}</option>;
                   })}
                 </select>
               </div>
