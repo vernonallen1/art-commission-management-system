@@ -1,15 +1,18 @@
-import React from 'react';
-import { House, Palette, Store, ShoppingBag   } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const SideBarTile = ({title, icon: Icon, route}) => {
+const SideBarTile = ({ title, icon: Icon, route }) => {
   const navigate = useNavigate();
-  return (
-    <div class='p-2 hover:bg-blue-300 rounded-md font-bold flex space-x-2' onClick={(() => navigate(route))}>  
-        {Icon && <Icon />} 
-        <span>{title}</span>
-    </div>
-  )
-}
 
-export default SideBarTile
+  return (
+    <button
+      onClick={() => route && navigate(route)}
+      className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-100 hover:text-blue-600 rounded-lg transition-colors duration-200 font-medium text-base"
+    >
+      {Icon && <Icon size={20} />}
+      <span>{title}</span>
+    </button>
+  );
+};
+
+export default SideBarTile;

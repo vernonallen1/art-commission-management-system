@@ -3,10 +3,14 @@ import ProfileBadge from "./ProfileBadge";
 
 const TopBar = () => {
   return (
-    <div class="fixed flex justify-between top-0 py-3 px-10 w-screen bg-blue-200 items-center border-b border-gray-300 border-b-3 border-opacity-50">
-      <span class="font-bold text-lg">JemuDraws</span>
-      <ProfileBadge />
-    </div>
+    <header className="fixed top-0 left-0 w-full bg-blue-100/80 backdrop-blur-md shadow-sm border-b border-blue-300 z-50">
+      <div className="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
+        <span className="text-xl font-semibold text-blue-800 tracking-wide">
+          JemuDraws
+        </span>
+        <ProfileBadge />
+      </div>
+    </header>
   );
 };
 

@@ -6,7 +6,7 @@ const SideBar = () => {
   return (
     <div
       id="component"
-      class="fixed p-5 h-screen fixed left-0 flex flex-col space-y-7"
+      class="fixed p-5 h-screen left-0 flex flex-col space-y-7"
     >
       <SideBarTile title="Home" icon={House} route="/" />
       <SideBarTile title="Commissions" icon={Palette} route="/commission" />

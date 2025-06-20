@@ -76,10 +76,17 @@ const InProgress = (props) => {
   };
 
   useEffect(() => {
-    if (progressImages) (
-      setProgressImageStatus(Object.fromEntries(progressImages.map(progress => [progress.status_progress, progress.image])))
-    )
-  }, []);
+    if (progressImages) {
+      setProgressImageStatus(
+        Object.fromEntries(
+          progressImages.map((progress) => [
+            progress.status_progress,
+            progress.image,
+          ])
+        )
+      );
+    }
+  }, [progressImages]);
 
   if (isLoading) {
     return <div>Loading</div>;
@@ -96,8 +103,11 @@ const InProgress = (props) => {
         <p className="font-bold text-2xl p-4">
           ID: {data.id} | {data.commission_size} - {data.commission_style}
         </p>
-        <button className="ml-2 bg-blue-200 rounded-md p-1" onClick={() => viewRef(data.id)}>View Ref
-
+        <button
+          className="ml-2 bg-blue-200 rounded-md p-1"
+          onClick={() => viewRef(data.id)}
+        >
+          View Ref
         </button>
       </div>
       <div className="flex">
@@ -120,7 +130,11 @@ const InProgress = (props) => {
       <div className="flex justify-center items-center h-[300px] border-1 border-gray-300 bg-gray-100 rounded-xl m-2">
         {progressImageStatus[selectedProgress] && (
           <img
-            src={progressImageStatus[selectedProgress].preview ? progressImageStatus[selectedProgress].preview : progressImageStatus[selectedProgress]}
+            src={
+              progressImageStatus[selectedProgress].preview
+                ? progressImageStatus[selectedProgress].preview
+                : progressImageStatus[selectedProgress]
+            }
             alt={`Uploaded`}
             className="h-full rounded-md"
           />
